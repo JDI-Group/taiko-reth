@@ -133,6 +133,43 @@ pub static TAIKO_A7: Lazy<Arc<ChainSpec>> = Lazy::new(|| {
     .into()
 });
 
+/// The Moonchain HUDSON spec
+pub static MOONCHAIN_HUDSON: Lazy<Arc<ChainSpec>> = Lazy::new(|| {
+    ChainSpec {
+        chain: 177888.into(),
+        genesis_hash: None,
+        paris_block_and_final_difficulty: None,
+        hardforks: BTreeMap::from([
+            (Hardfork::Frontier, ForkCondition::Block(0)),
+            (Hardfork::Homestead, ForkCondition::Block(0)),
+            (Hardfork::Dao, ForkCondition::Block(0)),
+            (Hardfork::Tangerine, ForkCondition::Block(0)),
+            (Hardfork::SpuriousDragon, ForkCondition::Block(0)),
+            (Hardfork::Byzantium, ForkCondition::Block(0)),
+            (Hardfork::Constantinople, ForkCondition::Block(0)),
+            (Hardfork::Petersburg, ForkCondition::Block(0)),
+            (Hardfork::Istanbul, ForkCondition::Block(0)),
+            (Hardfork::Berlin, ForkCondition::Block(0)),
+            (Hardfork::London, ForkCondition::Block(0)),
+            (
+                Hardfork::Paris,
+                ForkCondition::TTD { fork_block: None, total_difficulty: U256::from(0) },
+            ),
+            (Hardfork::Shanghai, ForkCondition::Timestamp(0)),
+            #[cfg(feature = "taiko")]
+            (Hardfork::Hekla, ForkCondition::Block(0)),
+            #[cfg(feature = "taiko")]
+            (
+                Hardfork::Ontake,
+                ForkCondition::Block(0),
+            ),
+        ]),
+        deposit_contract: None,
+        ..Default::default()
+    }
+    .into()
+});
+
 /// The Taiko devnet spec
 pub static TAIKO_DEV: Lazy<Arc<ChainSpec>> = Lazy::new(|| {
     ChainSpec {
@@ -204,6 +241,44 @@ pub static TAIKO_MAINNET: Lazy<Arc<ChainSpec>> = Lazy::new(|| {
                     std::env::var("MAINNET_ONTAKE_HEIGHT")
                         .map_or(538304, |h| h.parse().unwrap_or(538304)),
                 ),
+            ),
+        ]),
+        deposit_contract: None,
+        ..Default::default()
+    }
+    .into()
+});
+
+
+/// The Moonchain MAINNET spec
+pub static MOONCHAIN_MAINNET: Lazy<Arc<ChainSpec>> = Lazy::new(|| {
+    ChainSpec {
+        chain: 999888.into(),
+        genesis_hash: None,
+        paris_block_and_final_difficulty: None,
+        hardforks: BTreeMap::from([
+            (Hardfork::Frontier, ForkCondition::Block(0)),
+            (Hardfork::Homestead, ForkCondition::Block(0)),
+            (Hardfork::Dao, ForkCondition::Block(0)),
+            (Hardfork::Tangerine, ForkCondition::Block(0)),
+            (Hardfork::SpuriousDragon, ForkCondition::Block(0)),
+            (Hardfork::Byzantium, ForkCondition::Block(0)),
+            (Hardfork::Constantinople, ForkCondition::Block(0)),
+            (Hardfork::Petersburg, ForkCondition::Block(0)),
+            (Hardfork::Istanbul, ForkCondition::Block(0)),
+            (Hardfork::Berlin, ForkCondition::Block(0)),
+            (Hardfork::London, ForkCondition::Block(0)),
+            (
+                Hardfork::Paris,
+                ForkCondition::TTD { fork_block: None, total_difficulty: U256::from(0) },
+            ),
+            (Hardfork::Shanghai, ForkCondition::Timestamp(0)),
+            #[cfg(feature = "taiko")]
+            (Hardfork::Hekla, ForkCondition::Block(0)),
+            #[cfg(feature = "taiko")]
+            (
+                Hardfork::Ontake,
+                ForkCondition::Block(0),
             ),
         ]),
         deposit_contract: None,
@@ -715,11 +790,11 @@ impl ChainSpec {
         self.chain.is_optimism()
     }
 
-    /// Returns `true` if this is a Taiko chain.
+    /// Returns `true` if this is a Taiko/Moonchain chain.
     #[inline]
     pub fn is_taiko(&self) -> bool {
         let id = self.chain.id();
-        id >= 167000 && id <= 168000
+        (id >= 167000 && id <= 168000) || (id == 177888) || (id == 999888)
     }
 
     /// Returns `true` if this chain is Optimism mainnet.
